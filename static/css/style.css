@@ -355,3 +355,46 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 25px 60px rgba(0,0,0,0.15);
 }
+/* ===== MOBILE FIXES ===== */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+
+    .hero {
+        height: auto;
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: 28px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+
+    .cta-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .home-section, .page-section, .contact-box {
+        margin: 40px 15px;
+        padding: 30px 20px;
+    }
+
+    .home-section h2, .page-section h1 {
+        font-size: 24px;
+    }
+
+    .home-section p, .content-box p, .contact-box p, .home-intro p {
+        font-size: 14px;
+    }
+
+    .nav-links a {
+        margin-left: 15px;
+        font-size: 14px;
+    }
+}
