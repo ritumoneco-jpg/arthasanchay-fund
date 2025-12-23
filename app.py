@@ -1,55 +1,52 @@
 from flask import Flask, render_template, request, redirect, url_for
-import smtplib
 from email.message import EmailMessage
+from threading import Thread
+import smtplib
 
 app = Flask(__name__)
 
-# ---------- Your Gmail credentials ----------
-EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"  # the email where you want to receive enquiries
-EMAIL_PASSWORD = "ffjb wtfd hjlo rlnc"   # use app password if 2FA is on
+# Your Gmail credentials
+EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"
+EMAIL_PASSWORD = "ffjbwtfdhjlorlnc"  # App password (no spaces)
 
-# ---------- HOME PAGE ----------
+def send_email(msg):
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        server.send_message(msg)
+
 @app.route('/')
 def home():
-    return render_template('home.html')  # make sure this is your home page filename
+    return render_template('home.html')
 
-# ---------- ABOUT PAGE ----------
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-# ---------- APPROACH PAGE ----------
 @app.route('/approach')
 def approach():
     return render_template('approach.html')
 
-# ---------- COMPLIANCE PAGE ----------
 @app.route('/compliance')
 def compliance():
     return render_template('compliance.html')
 
-# ---------- TEAM PAGE ----------
 @app.route('/team')
 def team():
     return render_template('team.html')
 
-# ---------- CONTACT PAGE ----------
-
-@app.route("/contact", methods=["GET", "POST"])
+@app.route('/contact', methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        phone = request.form.get("phone")
-        message = request.form.get("message")
+        name = request.form["name"]
+        email = request.form["email"]
+        phone = request.form["phone"]
+        message = request.form["message"]
 
-        try:
-            msg = EmailMessage()
-            msg["Subject"] = "New Enquiry - Arthasanchay"
-            msg["From"] = EMAIL_ADDRESS
-            msg["To"] = EMAIL_ADDRESS
-            msg.set_content(
-                f"""
+        msg = EmailMessage()
+        msg["Subject"] = "New Enquiry - Arthsanchay Growth Fund"
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = EMAIL_ADDRESS
+        msg.set_content(f"""
 New enquiry received:
 
 Name: {name}
@@ -58,17 +55,15 @@ Phone: {phone}
 
 Message:
 {message}
-                """
-            )
+        """)
 
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-                server.send_message(msg)
+        # Send email in background thread
+        Thread(target=send_email, args=(msg,)).start()
 
-        except Exception as e:
-            print("Email error:", e)
-
-        # 👇 instant response, no waiting
         return redirect(url_for("contact"))
 
     return render_template("contact.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
+    
