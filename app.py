@@ -1,18 +1,13 @@
+
 from flask import Flask, render_template, request, redirect, url_for
-from email.message import EmailMessage
-from threading import Thread
 import smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 
-# Your Gmail credentials
+# Replace with your Gmail and app password (no spaces)
 EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"
-EMAIL_PASSWORD = "nfdwahhxpyldlzop"  # App password (no spaces)
-
-def send_email(msg):
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.send_message(msg)
+EMAIL_PASSWORD = "nfdwahhxpyldlzop"
 
 @app.route('/')
 def home():
@@ -34,19 +29,21 @@ def compliance():
 def team():
     return render_template('team.html')
 
-@app.route('/contact', methods=["GET", "POST"])
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        phone = request.form["phone"]
-        message = request.form["message"]
+        name = request.form.get("name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        message = request.form.get("message")
 
+        # Create email
         msg = EmailMessage()
         msg["Subject"] = "New Enquiry - Arthsanchay Growth Fund"
         msg["From"] = EMAIL_ADDRESS
         msg["To"] = EMAIL_ADDRESS
-        msg.set_content(f"""
+        msg.set_content(
+            f"""
 New enquiry received:
 
 Name: {name}
@@ -55,14 +52,21 @@ Phone: {phone}
 
 Message:
 {message}
-        """)
+            """
+        )
 
-        # Send email in background thread
-        Thread(target=send_email, args=(msg,)).start()
+        # Send email using Gmail SMTP
+        try:
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+                server.send_message(msg)
+        except Exception as e:
+            print("Error sending email:", e)
 
         return redirect(url_for("contact"))
 
     return render_template("contact.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
