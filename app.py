@@ -34,22 +34,22 @@ def team():
     return render_template('team.html')
 
 # ---------- CONTACT PAGE ----------
-@app.route('/contact', methods=['GET', 'POST'])
+
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
-        # Get form data
         name = request.form.get("name")
         email = request.form.get("email")
         phone = request.form.get("phone")
         message = request.form.get("message")
 
-        # Prepare email
-        msg = EmailMessage()
-        msg["Subject"] = "New Enquiry - Arthasanchay Growth Fund"
-        msg["From"] = EMAIL_ADDRESS
-        msg["To"] = EMAIL_ADDRESS
-        msg.set_content(
-            f"""
+        try:
+            msg = EmailMessage()
+            msg["Subject"] = "New Enquiry - Arthasanchay"
+            msg["From"] = EMAIL_ADDRESS
+            msg["To"] = EMAIL_ADDRESS
+            msg.set_content(
+                f"""
 New enquiry received:
 
 Name: {name}
@@ -58,27 +58,17 @@ Phone: {phone}
 
 Message:
 {message}
-            """
-        )
+                """
+            )
 
-        # Send email
-        try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
                 server.send_message(msg)
-        except Exception as e:
-            print("Error sending email:", e)
 
-        # Redirect to contact page after sending
+        except Exception as e:
+            print("Email error:", e)
+
+        # 👇 instant response, no waiting
         return redirect(url_for("contact"))
 
     return render_template("contact.html")
-
-# ---------- RUN APP ----------
-
-import os
-
-if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
-    
