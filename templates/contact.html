@@ -2,50 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Arthasanchay Growth Fund</title>
+    <title>Contact | Arthasanchay</title>
+
+    <!-- CSS (DO NOT CHANGE PATH) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">Arthasanchay</div>
-        <div class="nav-links">
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('about') }}">About</a>
-            <a href="{{ url_for('approach') }}">Approach</a>
-            <a href="{{ url_for('compliance') }}">Compliance</a>
-            <a href="{{ url_for('team') }}">Team</a>
-            <a class="active" href="{{ url_for('contact') }}">Contact</a>
-        </div>
-    </nav>
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="logo">Arthasanchay</div>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/approach">Approach</a>
+        <a href="/team">Team</a>
+        <a href="/compliance">Compliance</a>
+        <a href="/contact" class="active">Contact</a>
+    </div>
+</nav>
 
-    <!-- Contact Box -->
-    <section class="contact-box">
+<!-- ===== CONTACT SECTION (THIS FIXES WIDTH) ===== -->
+<section class="page-section">
+
+    <div class="contact-box">
         <h2>Contact Us</h2>
 
-        <!-- Info Section -->
         <div class="contact-info">
-            <p><strong>Email:</strong>samarthagrawal252525@gmail.com</p>
-            <p><strong>Phone:</strong> +91 7389661210</p>
-            <p><strong>Address:</strong> A-603, Cello Triumph, Goregaon East, Mumbai 400063</p>
+          <p><strong>Address:</strong>A-603, Cello Triumph, Goregaon East, Mumbai 400063</p>
+            <p><strong>Email:</strong> samarthagrawal252525@gmail.com</p>
+            <p><strong>Phone:</strong> +91 9789322188</p>
+            
         </div>
 
-        <!-- Form Section -->
-        <form method="POST" action="/contact">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <input type="text" name="phone" placeholder="Your Phone" required>
-    <textarea name="message" placeholder="Your Message" required></textarea>
-    <button type="submit">Send Enquiry</button>
-</form>
-    </section>
+        {% if success %}
+            <p class="success-message">
+                Thank you for your response. We will contact you soon.
+            </p>
+        {% endif %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        &copy; 2025 Arthasanchay Growth Fund. All rights reserved.
-    </footer>
+        <form method="POST" action="/contact">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <p>&copy; 2025 Arthasanchay. All rights reserved.</p>
+</footer>
 
 </body>
 </html>
