@@ -4,7 +4,7 @@ from flask_mail import Mail, Message
 app = Flask(__name__)
 app.secret_key = "secretkey"
 
-# Gmail configuration
+# Mail configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -14,10 +14,9 @@ app.config['MAIL_DEFAULT_SENDER'] = 'samarthagrawal252525@gmail.com'
 
 mail = Mail(app)
 
-# Routes
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')
 
 @app.route('/about')
 def about():
@@ -48,11 +47,16 @@ def contact():
             body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
         )
 
-        mail.send(msg)
-        flash("Thank you for your response!", "success")
+        try:
+            mail.send(msg)
+            flash("Thank you for your response!", "success")
+        except Exception as e:
+            flash(f"Something went wrong: {str(e)}", "danger")
+
         return redirect(url_for('contact'))
 
     return render_template('contact.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+    

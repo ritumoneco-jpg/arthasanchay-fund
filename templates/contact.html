@@ -35,11 +35,15 @@
             
         </div>
 
-        {% if success %}
-            <p class="success-message">
-                Thank you for your response. We will contact you soon.
-            </p>
-        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="success-message" style="color: {% if category == 'success' %}white{% else %}red{% endif %}; margin-bottom: 15px;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
         <form method="POST" action="/contact">
             <input type="text" name="name" placeholder="Your Name" required>
