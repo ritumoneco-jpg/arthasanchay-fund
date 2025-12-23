@@ -1,16 +1,16 @@
-
 from flask import Flask, render_template, request, redirect, url_for
-from email.message import EmailMessage
-import smtplib
 import os
+import smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 
 # ===== EMAIL CONFIG =====
-EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"
-EMAIL_PASSWORD = "nfdwahhxpyldlzop"   # NO SPACES
+EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 
 # ===== ROUTES =====
+
 @app.route("/")
 def home():
     return render_template("home.html")
@@ -44,6 +44,7 @@ def contact():
             msg["Subject"] = "New Enquiry - Arthasanchay"
             msg["From"] = EMAIL_ADDRESS
             msg["To"] = EMAIL_ADDRESS
+
             msg.set_content(
                 f"""
 New enquiry received:
@@ -54,7 +55,7 @@ Phone: {phone}
 
 Message:
 {message}
-"""
+                """
             )
 
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
@@ -64,12 +65,14 @@ Message:
         except Exception as e:
             print("EMAIL ERROR:", e)
 
-        # 🚀 INSTANT RESPONSE — NO DELAY
+        # IMPORTANT: redirect so page doesn't hang
         return redirect(url_for("contact"))
 
     return render_template("contact.html")
 
 
+# ===== RUN =====
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    
     
