@@ -1,73 +1,34 @@
-from flask import Flask, render_template, request
-import smtplib
-from email.message import EmailMessage
 import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
+app.secret_key = "secretkey"
 
-# ================= EMAIL CONFIG =================
-EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"
-EMAIL_PASSWORD = "gsgqhnlueomxnsrd"   # Gmail App Password (no spaces)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
 
-# ================= ROUTES =================
+mail = Mail(app)
 
-@app.route("/")
-def home():
-    return render_template("home.html")
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-@app.route("/approach")
-def approach():
-    return render_template("approach.html")
-
-@app.route("/team")
-def team():
-    return render_template("team.html")
-
-@app.route("/compliance")
-def compliance():
-    return render_template("compliance.html")
-
-@app.route("/contact", methods=["GET", "POST"])
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    if request.method == "POST":
-        try:
-            name = request.form.get("name")
-            email = request.form.get("email")
-            message = request.form.get("message")
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
 
-            msg = EmailMessage()
-            msg["Subject"] = "New Enquiry - Arthasanchay"
-            msg["From"] = EMAIL_ADDRESS
-            msg["To"] = EMAIL_ADDRESS
+        msg = Message(
+            subject="New Contact Form Submission",
+            recipients=["samarthagrawal252525@gmail.com"],
+            body=f"Name: {name}\nEmail: {email}\nMessage: {message}"
+        )
 
-            msg.set_content(f"""
-New Contact Enquiry
+        mail.send(msg)
+        flash("Thank you for your response!", "success")
+        return redirect(url_for('contact'))
 
-Name: {name}
-Email: {email}
-
-Message:
-{message}
-""")
-
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-                server.send_message(msg)
-
-            # SUCCESS
-            return render_template("contact.html", success=True)
-
-        except Exception as e:
-            print("EMAIL ERROR:", e)
-            return render_template("contact.html", error=True)
-
-    return render_template("contact.html")
-
-# ================= RUN =================
-if __name__ == "__main__":
-    app.run(debug=True)
-    
+    return render_template('contact.html')
