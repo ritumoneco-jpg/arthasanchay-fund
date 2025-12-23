@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Your Gmail credentials
 EMAIL_ADDRESS = "samarthagrawal252525@gmail.com"
-EMAIL_PASSWORD = "ffjbwtfdhjlorlnc"  # App password (no spaces)
+EMAIL_PASSWORD = "nfdw ahhx pyld lzop"  # App password (no spaces)
 
 def send_email(msg):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
