@@ -2,63 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Contact | Arthasanchay</title>
-
-    <!-- CSS (DO NOT CHANGE PATH) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<!-- ===== NAVBAR ===== -->
+<!-- Navbar -->
 <nav class="navbar">
-    <div class="logo">Arthasanchay</div>
+    <div class="logo">ArthaSanchay</div>
     <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/approach">Approach</a>
-        <a href="/team">Team</a>
-        <a href="/compliance">Compliance</a>
-        <a href="/contact" class="active">Contact</a>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('approach') }}">Approach</a>
+        <a href="{{ url_for('team') }}">Team</a>
+        <a href="{{ url_for('compliance') }}">Compliance</a>
+        <a class="active" href="{{ url_for('contact') }}">Contact</a>
     </div>
 </nav>
 
-<!-- ===== CONTACT SECTION (THIS FIXES WIDTH) ===== -->
-<section class="page-section">
+<!-- Contact Box -->
+<div class="contact-box">
+    <h2>Contact Us</h2>
 
-    <div class="contact-box">
-        <h2>Contact Us</h2>
-
-        <div class="contact-info">
-          <p><strong>Address:</strong> A-603, Cello Triumph, Goregaon East, Mumbai 400063</p>
-            <p><strong>Email:</strong> samarthagrawal252525@gmail.com</p>
-            <p><strong>Phone:</strong> +91 9789322188</p>
-            
-        </div>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="success-message" style="color: {% if category == 'success' %}white{% else %}red{% endif %}; margin-bottom: 15px;">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-        <form method="POST" action="/contact">
-            <input type="text" name="name" placeholder="Your Name" required>
-            <input type="email" name="email" placeholder="Your Email" required>
-            <textarea name="message" placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
+    <div class="contact-info">
+      <p>Address: A-603, Cello Triumph, Goregaon East, Mumbai 400063</p>
+        <p>Phone: +91 9789322188</p>
+        <p>Email: samarthagrawal252525@gmail.com</p>
     </div>
 
-</section>
+    <form method="POST" action="{{ url_for('contact') }}">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+    </form>
 
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-    <p>&copy; 2025 Arthasanchay. All rights reserved.</p>
-</footer>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="success-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
 
 </body>
 </html>
+        
+       
